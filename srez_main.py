@@ -134,15 +134,15 @@ def _demo(filenames):
     
     # sess, summary_writer = setup_tensorflow()
     test_filenames  = all_filenames[:]
-    sample_features,sample_labels  = srez_input.setup_inputs_demo(sess,filenames)
+    sample_features = srez_input.setup_inputs_demo(sess,filenames)
+    print(sample_features.get_shape())
 
-
-    noise_level = .03
+    noise_level = .0
     sample_features = sample_features + \
                            tf.random_normal(sample_features.get_shape(), stddev=noise_level)
-    test_feature, test_label = sess.run([sample_features, sample_labels])
+    test_feature = sess.run(sample_features)
 
-    
+    # print(test_feature)
 
     with tf.Session() as sess:
       
@@ -158,7 +158,7 @@ def _demo(filenames):
         
 
         gene_output = sess.run(gene_moutput, feed_dict=feed_dict)
-        _summarize_progress_single(td, sample_features, sample_labels, gene_output, 'out')
+        _summarize_progress_single(td, sample_features, gene_output, 'out')
 
 
     

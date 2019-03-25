@@ -89,7 +89,7 @@ def setup_inputs_demo(sess, filenames, image_size=None, capacity_factor=3):
 
     # wiggle = 8
     # off_x, off_y = 25-wiggle, 60-wiggle
-    crop_size = 128
+    crop_size = 16
     # crop_size_plus = crop_size + 2*wiggle
     # image = tf.image.crop_to_bounding_box(image, off_y, off_x, crop_size_plus, crop_size_plus)
     # image = tf.random_crop(image, [crop_size, crop_size, 3])
@@ -98,15 +98,15 @@ def setup_inputs_demo(sess, filenames, image_size=None, capacity_factor=3):
     image = tf.cast(image, tf.float32)/255.0
 
     if crop_size != image_size:
-        image = tf.image.resize_area(image, [image_size, image_size])
+        image = tf.image.resize_area(image, [16, 16])
 
     # The feature is simply a Kx downscaled version
     K = 4
     downsampled = tf.image.resize_area(image, [image_size//K, image_size//K])
 
-    feature = tf.reshape(downsampled, [image_size//K, image_size//K, 3])
-    label   = tf.reshape(image,       [image_size,   image_size,     3])
-    features, labels = tf.train.batch([feature, label],
+    feature = tf.reshape(image, [image_size//K, image_size//K, 3])
+    # label   = tf.reshape(image,       [image_size,   image_size,     3])
+    features = tf.train.batch([feature],
                                       batch_size=16,
                                       num_threads=16,
                                       capacity = capacity_factor*16,
@@ -117,4 +117,4 @@ def setup_inputs_demo(sess, filenames, image_size=None, capacity_factor=3):
 
 
     print(features)
-    return features,labels
+    return features
